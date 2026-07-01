@@ -48,8 +48,6 @@ CIDIS-Test, x4 guided infrared super-resolution:
 
 ![WTFMB detail](images/wtfmb_detail.png)
 
-![Wavelet band enhancement](images/wavelet_bands.png)
-
 ## Installation
 
 ```bash
