@@ -10,30 +10,24 @@
   <a href="#"><img src="https://img.shields.io/badge/model-WDTFuSR-4c7c59"></a>
 </p>
 
-WDTFuSR is a guided infrared image super-resolution network that uses high-resolution visible images to help reconstruct sharper and cleaner infrared images.
-
-## News
-
-- Pretrained weights are available.
-- Dataset link will be updated after release.
+WDTFuSR reconstructs high-resolution infrared images from low-resolution infrared inputs with visible-image guidance.
 
 ## Architecture
 
 ![WDTFuSR architecture](images/wdtfusr_architecture.png)
 
-## Method Highlights
+## Highlights
 
-- Wavelet feature modulation for infrared detail enhancement.
-- Dense Transformer feature extraction for stronger structure preservation.
-- Attention-guided cross-domain fusion for visible-to-infrared texture transfer.
-- Robust training strategy for missing or unreliable RGB guidance.
+- Wavelet modulation for infrared detail enhancement.
+- Dense Transformer backbone for structure preservation.
+- Attention-guided infrared-visible feature fusion.
 
 ## Downloads
 
-| Item | Link |
+| Resource | Link |
 | --- | --- |
 | Pretrained weights | [Google Drive](https://drive.google.com/file/d/1HyumFQTKD8-rKLHxWvMbQiLudf8IztIT/view?usp=sharing) |
-| Dataset | To be updated |
+| CIDIS dataset | [vision-cidis/CIDIS-dataset](https://github.com/vision-cidis/CIDIS-dataset) |
 
 ## Results
 
@@ -42,13 +36,13 @@ CIDIS-Test, x4 guided infrared super-resolution:
 | Method | PSNR | SSIM |
 | --- | ---: | ---: |
 | SwinFuSR | 35.92 | 0.9512 |
-| **WDTFuSR (Ours)** | **36.49** | **0.9552** |
+| **WDTFuSR** | **36.49** | **0.9552** |
 
-## Visualization
+## Module
 
 ![WTFMB detail](images/wtfmb_detail.png)
 
-## Installation
+## Usage
 
 ```bash
 conda create --name WDTFuSR python=3.9
@@ -57,29 +51,19 @@ conda install pytorch torchvision pytorch-cuda=11.7 -c pytorch -c nvidia
 pip install -r requirements.txt
 ```
 
-## Training
-
-Update the dataset paths in `options/*.json`, then run:
+Train:
 
 ```bash
 python main_train_SwinFuSR.py --opt options/train_final.json
 ```
 
-Other configurations:
-
-```bash
-python main_train_SwinFuSR.py --opt options/train_baseline.json
-python main_train_SwinFuSR.py --opt options/train_augmentation.json
-python main_train_SwinFuSR.py --opt options/train_x16.json
-```
-
-## Testing
-
-Set `path/pretrained_netG` in `options/test_swinFuSR.json`, then run:
+Test:
 
 ```bash
 python test_SwinFuSR.py --opt options/test_swinFuSR.json
 ```
+
+Before training or testing, update the dataset and checkpoint paths in `options/*.json`.
 
 ## Citation
 
