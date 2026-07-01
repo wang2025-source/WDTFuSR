@@ -1,125 +1,195 @@
-# SwinFuSR
-SwinFuSR: an image fusion inspired model for RGB-guided thermal image super-resolution  [![arXiv](https://img.shields.io/badge/arXiv-Paper-<COLOR>.svg)](https://arxiv.org/abs/2404.14533)
+# WDTFuSR
 
-🏅Top 3 in the Thermal Image Super-Resolution Challenge 2024 (track 2)
-## ✨ Guided thermal super resolution Examples ✨
-Some examples of guided resolution on images from PBVS24 track-2 dataset.
-![](images/example1.png)
-![](images/example2.png)
-![](images/example3.png)
+<p align="center">
+  <b>A Fusion-Guided Infrared Image Super-Resolution Network with Wavelet Modulation and Dense Transformer</b>
+</p>
 
+<p align="center">
+  <a href="#"><img src="https://img.shields.io/badge/task-guided%20infrared%20SR-2f6f9f"></a>
+  <a href="#"><img src="https://img.shields.io/badge/backbone-Swin%20Transformer-4c7c59"></a>
+  <a href="#"><img src="https://img.shields.io/badge/module-wavelet%20modulation-8b5cf6"></a>
+  <a href="#"><img src="https://img.shields.io/badge/framework-PyTorch-ee4c2c"></a>
+</p>
 
-## 🚀 Set up 
-```
-conda create --name SwinFuSR pytorch torchvision pytorch-cuda=11.7 -c pytorch -c nvidia
-conda activate SwinFuSR
+WDTFuSR is a fusion-guided infrared image super-resolution framework designed to recover high-resolution thermal details from a low-resolution infrared input with the help of a registered high-resolution visible image. The project targets the practical bottlenecks of infrared imaging: weak texture, low contrast, sensor noise, cross-modal discrepancy, and information loss in deep reconstruction networks.
+
+This repository is organized from the WDTFuSR research materials of Shaohua Yang, Xingang Mou, Xiao Zhou, and Dongming Wang. It extends the SwinFuSR-style guided SR codebase with wavelet feature modulation and dense attention-driven feature preservation for infrared-visible reconstruction.
+
+## Overview
+
+![WDTFuSR architecture](images/wdtfusr_architecture.png)
+
+Given a low-resolution infrared image and a high-resolution visible guidance image, WDTFuSR first purifies and enhances infrared features in the frequency domain, then performs dual-stream deep feature extraction and cross-domain fusion, and finally reconstructs the high-resolution infrared result.
+
+Core ideas:
+
+- Wavelet Transform Feature Modulation Block (WTFMB): decomposes shallow infrared features into frequency sub-bands, suppresses low-frequency non-uniform noise, and enhances mid/high-frequency target edges.
+- Residual Dense Channel Attention Group (RDCAG): keeps sparse infrared structure flowing through deeper layers with dense feature reuse and attention-based recalibration.
+- Attention-guided Cross-domain Fusion Module (ACFM): adaptively transfers useful visible textures into the infrared stream while reducing cross-modal contamination.
+- Random modality dropout: improves robustness when the visible guidance image is missing, occluded, or unreliable.
+
+## WTFMB Detail
+
+![WTFMB detail](images/wtfmb_detail.png)
+
+The WTFMB uses local detail and structural guidance branches before the DWT/IDWT modulation path. The frequency-domain branch strengthens directional structures and suppresses noisy low-frequency interference before cross-modal fusion.
+
+## Wavelet Band Enhancement
+
+![Wavelet band enhancement](images/wavelet_bands.png)
+
+The wavelet modulation branch explicitly separates approximation and directional detail components. This makes the network less dependent on raw visible textures and helps the infrared stream enter fusion with cleaner structural features.
+
+## Quantitative Results
+
+The following results are from the CIDIS-Test setting in the manuscript materials at x4 magnification.
+
+| Method | Scale | PSNR | SSIM |
+| --- | ---: | ---: | ---: |
+| Bicubic | x4 | 31.76 | 0.8971 |
+| SRCNN | x4 | 33.17 | 0.9161 |
+| FSRCNN | x4 | 33.14 | 0.9115 |
+| VDSR | x4 | 34.56 | 0.9365 |
+| EDSR | x4 | 35.28 | 0.9453 |
+| SwinIR | x4 | 34.66 | 0.9410 |
+| DRCT | x4 | 35.71 | 0.9477 |
+| SwinFuSR | x4 | 35.92 | 0.9512 |
+| **WDTFuSR (Ours)** | **x4** | **36.49** | **0.9552** |
+
+Ablation on CIDIS-Test:
+
+| WTFMB | RDCAG | PSNR |
+| :---: | :---: | ---: |
+| - | - | 35.92 |
+| yes | - | 36.12 |
+| - | yes | 36.28 |
+| yes | yes | **36.49** |
+
+## Dataset Notes
+
+The manuscript experiments use CIDIS with the following split:
+
+| Split | Number of pairs/images | Usage |
+| --- | ---: | --- |
+| Train | 700 pairs | model optimization |
+| Validation | 200 pairs | model selection and validation |
+| Test | 100 images | final evaluation |
+
+Additional tests on RoadScene and TNO are used to examine generalization under different infrared-visible scene distributions.
+
+For the released training scripts, update the dataset paths in `options/*.json` before running:
+
+- `datasets/train/dataroot_lr`
+- `datasets/train/dataroot_guide`
+- `datasets/train/dataroot_gt`
+- `datasets/validation/dataroot_lr`
+- `datasets/validation/dataroot_guide`
+- `datasets/validation/dataroot_gt`
+
+## Environment
+
+```bash
+conda create --name WDTFuSR python=3.9
+conda activate WDTFuSR
+
+# Install PyTorch according to your CUDA version.
+# Example for CUDA 11.7:
+conda install pytorch torchvision pytorch-cuda=11.7 -c pytorch -c nvidia
+
 pip install -r requirements.txt
 ```
 
-## 🤖 Architecture 
-![](images/archi.png)
-## ⚙️ Training 
-Register to the competition to access the [**PBVS dataset**](https://codalab.lisn.upsaclay.fr/competitions/17014#participate), and update **dataroot_lr/dataroot_guide/dataroot_gt path** in the json file.
+## Training
 
-For training on the small network for x8 guided super resolution(944,491 parameters, trainable with one RTX 3080 12GB):
+Small x8 guided SR configuration:
 
-    python main_train_SwinFuSR.py --opt options/train_baseline.json
-
-For training on the large network for x8 guided super resolution(3.3 M parameters, trainable with two V100 32GB):
-
-    python main_train_SwinFuSR.py --opt options/train_final.json
-
-For training with robustness to the missing modality for x8 guided super resolution (proba_without_rgb=0.3) on the small network:
-
-    python main_train_SwinFuSR.py --opt options/train_modality_augmentation.json
-
-For training on the small network for x16 guided super resolution(944,491 parameters, trainable with one RTX 3080 12GB):
-
-    python main_train_SwinFuSR.py --opt options/train_x16.json
-
-## 🖋️ Fine-tuning 
-
-For fine-tuning the network with pre-trained weights, you can download them from the release section. Modify in the json file the argument **path/pretrained_netG** with the path where you put the weights. Then if you want fine tune for example with the baseline pretrained network, you can run:
-
-    python main_train_SwinFuSR.py --opt options/train_baseline_finetune.json
-
-## 👌 Testing 
-For testing, the json should be the same as the one you used for training the network you want to use. Specify in the argument **path/pretrained_netG** with the path where the weights of the network you want to use are.
-
-Then if you want to test the network with ground truth image and compute metrics with, set **without_GT** to true and add the path of your dataset on **datasets/validation/dataroot_lr,dataroot_guide,dataroot_gt**. 
-
-if there is no GT, set **without_GT** to false and add the path of your dataset on **datasets/test/dataroot_lr,dataroot_guide,dataroot_gt**
-
-For example, for testing on test set of the challenge:
-
-    python test_SwinFuSR.py --opt options/test_swinFuSR.json
-
-
-
-## 🕵️ Arguments 
-Argument scripts are described in a json file and are described in the table below
-|Argument|<div style="width:490px">Description</div>| <div style="width:'00px">Example</div>|
-|:-:|:-----:|:-:|
-| task | describe the task to be performed | Guided SR (do not modify) |
-| model | describe the framework ( gan for example) | plain  (do not modify)       |
-| gpu_ids  | the id of the GPUs to be used, and will automatically distribute the data to the various GPUs        | [0] if only one GPU               |
-| dist  | boolean which describe if data will be distributed           | true               |
-| scale     | Scale to perform super resolution | 8         |
-| wandb | boolean if you want monitor with wandb your run | true             |
-| n_channels_guide    | number of channels of the guide image | 3             |
-| path/root |    path where all files will be saved | Model/SR_competition24_baseline |
-|  path/images | path where all images will be saved  | Model/SR_competition24_baseline/images      |
-|  dataset/dataroot_lr | path of folder for lr images  | path_challenge/ChallengePBVS24/thermal/train/LR_x8/images      |
-|  dataset/dataroot_guide | path of folder for guide images  | path_challenge/ChallengePBVS24/visible/train/      |
-|  dataset/dataroot_gt | path of folder for gt images  |   path_challenge/ChallengePBVS24/thermal/train/GT/   |
-|  dataset/train/patch | if true, use patches rather than the entire image |   true  |
-|  dataset/train/H_size | patch size, patch argument must me true  |   64  |
-|  dataset/train/proba_without_rgb | probability to drop guide image  |   0.0 [0:1]  |
-|  dataset/dataloader_shuffle | boolean to iterate randomly over images  |   true  |
-|  dataset/dataloader_num_workers |number of workers to load images |   8  |
-|  netG/net_type |name of the network|   swinfusionSR (do not modify)  |
-|  netG/upscale |upsale of the network|   1 (do not modify )  |
-|  netG/in_chans |number of channel images |   1  |
-|  netG/img_size | input image size |   64  |
-|  netG/window_size |Size of windows dividing the image|   8  |
-|  netG/img_range |pixel value range|   1.0  |
-|  netG/embed_dim |patch embedding dimension (early convolutions)|   60 |
-|  netG/(Ex/fusion/Re_depths) |extraction/fusion/reconstruction  layer depth|   [2,2] -> 2 x Attention-guided Cross-domain Fusion block |
-|  netG/(Ex/Fusion/Re_heads) |head number Extraction/Fusion/reconstruction  layers|   [6, 6] -> 2 x Attention-guided Cross-domain Fusion block with 6 heads |
-|  netG/mlp_ratio |ratio of mlp hidden dim to embedding dim| 2|
-|  upsampler |the reconstruction reconstruction module. | null if upscale=1 or 'pixelshuffle' or 'pixelshuffledirect' or 'nearest+conv'|
-|  resi_connection |the convolutional block before residual connection. | '1conv','3conv' |
-|  init_type |weight initialization type |  'default','normal','uniform','xavier_normal','xavier_uniform'|
-|  train/batch_size |batch size |  16|
-|  train/G_lossfn_type |type of Loss, keep 'mixed' for a weighting of several losses  |  'mixed','l1','l2','l2sum'|
-|  train/weights |weighting values for different losses |  \{"l1":  1.0,"mse": 0.0,"ssim": 0.0,"psnr": 0.0,"contrast": 0.0,"lpips": 0.0,"adversarial": 0.0}|
-|  train/manual_seed |fixed seed for random number generation  |60  |
-|  train/G_optimizer_lr | learning rate |4e-4  |
-|  train/G_optimizer_clipgrad | value for Clip the gradient norm |null  |
-|  train/G_optimizer_reuse | boolean for reuse parameters from the optimizer  |true  |
-|  train/G_scheduler_type | type of learning rate scheduler |MultiStepLR (do not change)  |
-|  train/G_scheduler_milestones | list of epoch indices. Must be increasing |\[150000,250000]|
-|  train/G_scheduler_gamma | Multiplicative factor of learning rate decay |0.5|
-|  train/G_regularizer_orthstep | step for apply SVD Orthogonal Regularization on every layers |null|
-|  train/G_regularizer_clipstep | step to clip weights of the network|null|
-|  train/G_param_strict | boolean parameter of the pytorch load_network|true|
-|  train/checkpoint_test | every checkpoint_test step, compute metrics on the validation set|20000|
-|  train/checkpoint_print | every checkpoint_print step, compute metrics on the training set|50|
-|  train/limit_test | limit number of images to be generated from test set|150|
-|  train/limit_validation | limit number of images to evaluate from validation set|1150|
-|  train/epochs | epoch number to train the model|30000|
-
-## 📜 Citation
+```bash
+python main_train_SwinFuSR.py --opt options/train_baseline.json
 ```
-@InProceedings{Arnold_2024_CVPR,
-    author    = {Arnold, Cyprien and Jouvet, Philippe and Seoud, Lama},
-    title     = {SwinFuSR: An Image Fusion-inspired Model for RGB-guided Thermal Image Super-resolution},
-    booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR) Workshops},
-    month     = {June},
-    year      = {2024},
-    pages     = {3027-3036}
+
+Large x8 guided SR configuration:
+
+```bash
+python main_train_SwinFuSR.py --opt options/train_final.json
+```
+
+Random visible-modality dropout for robustness:
+
+```bash
+python main_train_SwinFuSR.py --opt options/train_augmentation.json
+```
+
+x16 guided SR configuration:
+
+```bash
+python main_train_SwinFuSR.py --opt options/train_x16.json
+```
+
+Fine-tuning from pretrained weights:
+
+```bash
+python main_train_SwinFuSR.py --opt options/train_baseline_finetune.json
+```
+
+Set `path/pretrained_netG` in the corresponding JSON file before fine-tuning or testing.
+
+## Testing
+
+```bash
+python test_SwinFuSR.py --opt options/test_swinFuSR.json
+```
+
+Important testing fields:
+
+- Set `path/pretrained_netG` to the checkpoint path.
+- Use `without_GT: false` when ground-truth infrared images are available and metrics should be computed.
+- Use `without_GT: true` when only inference outputs are needed.
+
+## Repository Structure
+
+```text
+WDTFuSR/
+├── data/                    # guided infrared-visible dataset loader
+├── images/                  # architecture and README figures
+├── models/
+│   ├── network_swinfusionSR.py
+│   ├── model_plain.py
+│   └── loss*.py
+├── options/                 # training, testing, fine-tuning configs
+├── utils/                   # image, logging, option, metric utilities
+├── main_train_SwinFuSR.py
+├── test_SwinFuSR.py
+└── requirements.txt
+```
+
+## Key Configuration Fields
+
+| Field | Meaning |
+| --- | --- |
+| `scale` | Super-resolution factor configured by the experiment. |
+| `n_channels_lr` | Number of infrared input channels. |
+| `n_channels_guide` | Number of visible guidance channels. |
+| `netG/net_type` | Network entry, currently `swinfusionSR`. |
+| `netG/embed_dim` | Feature embedding dimension. |
+| `netG/Ex_depths` | Depth of the infrared/visible extraction stage. |
+| `netG/Fusion_depths` | Depth of the cross-domain fusion stage. |
+| `netG/Re_depths` | Depth of the reconstruction stage. |
+| `datasets/train/proba_without_rgb` | Probability of dropping visible guidance during training. |
+| `train/G_optimizer_lr` | Initial learning rate. |
+| `train/G_scheduler_milestones` | Learning-rate decay milestones. |
+
+## Citation
+
+If this repository is useful for your work, please cite the WDTFuSR manuscript when it becomes available.
+
+```bibtex
+@misc{yang2026wdtfusr,
+  title  = {WDTFuSR: A Fusion-Guided Infrared Image Super-Resolution Network with Wavelet Modulation and Dense Transformer},
+  author = {Yang, Shaohua and Mou, Xingang and Zhou, Xiao and Wang, Dongming},
+  year   = {2026}
 }
 ```
 
-## 🤝 Acknowledgement 
-The codes are heavily based on [SwinFusion](https://github.com/Linfeng-Tang/SwinFusion) and a little by [CoReFusion](https://github.com/Kasliwal17/CoReFusion).  Thanks for their inspiring works.
+## Acknowledgements
+
+This project is built on the guided thermal image super-resolution implementation style of SwinFuSR and is also inspired by prior work on SwinFusion and CoReFusion. We thank the authors of these open-source projects and related infrared-visible fusion studies for their valuable contributions to the community.
