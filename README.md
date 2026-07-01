@@ -35,6 +35,16 @@ CIDIS-Test, x4 guided infrared super-resolution:
 
 | Method | PSNR | SSIM |
 | --- | ---: | ---: |
+| Bicubic | 31.76 | 0.8971 |
+| SRCNN | 33.17 | 0.9161 |
+| FSRCNN | 33.14 | 0.9115 |
+| VDSR | 34.56 | 0.9365 |
+| EDSR | 35.28 | 0.9453 |
+| SRDenseNet | 34.89 | 0.9401 |
+| RDN | 35.40 | 0.9448 |
+| RRDBNet | 35.18 | 0.9428 |
+| SwinIR | 34.66 | 0.9410 |
+| DRCT | 35.71 | 0.9477 |
 | SwinFuSR | 35.92 | 0.9512 |
 | **WDTFuSR** | **36.49** | **0.9552** |
 
