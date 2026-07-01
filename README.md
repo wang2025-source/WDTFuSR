@@ -74,17 +74,3 @@ python test_SwinFuSR.py --opt options/test_swinFuSR.json
 ```
 
 Before training or testing, update the dataset and checkpoint paths in `options/*.json`.
-
-## Citation
-
-```bibtex
-@misc{yang2026wdtfusr,
-  title  = {WDTFuSR: A Fusion-Guided Infrared Image Super-Resolution Network with Wavelet Modulation and Dense Transformer},
-  author = {Yang, Shaohua and Mou, Xingang and Zhou, Xiao and Wang, Dongming},
-  year   = {2026}
-}
-```
-
-## Acknowledgements
-
-This project is inspired by SwinFuSR, SwinFusion, and CoReFusion.
