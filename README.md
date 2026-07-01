@@ -14,7 +14,9 @@ WDTFuSR reconstructs high-resolution infrared images from low-resolution infrare
 
 ## Architecture
 
-![WDTFuSR architecture](images/wdtfusr_architecture.png)
+![WDTFuSR graphical abstract](images/graphical_abstract.png)
+
+WDTFuSR first enhances infrared features in the wavelet domain, then extracts dual-stream infrared-visible features and performs attention-guided cross-domain fusion for HR infrared reconstruction.
 
 ## Highlights
 
@@ -48,9 +50,31 @@ CIDIS-Test, x4 guided infrared super-resolution:
 | SwinFuSR | 35.92 | 0.9512 |
 | **WDTFuSR** | **36.49** | **0.9552** |
 
-## Module
+## Figures
 
-![WTFMB detail](images/wtfmb_detail.png)
+### Wavelet Transform Feature Modulation
+
+![WTFMB](images/paper_overview.png)
+
+WTFMB decomposes infrared features into frequency sub-bands to suppress background noise and strengthen target edges before fusion.
+
+### Residual Dense Channel Attention Group
+
+![RDCAG](images/rdcag_module.png)
+
+RDCAG reuses shallow and deep features through dense connections, reducing information loss in Transformer-based infrared reconstruction.
+
+### Attention-Guided Cross-Domain Fusion
+
+![ACFM](images/acfm_module.png)
+
+ACFM builds cross-modal attention between infrared and visible streams, transferring useful visible textures while preserving infrared structure.
+
+### LAM Analysis
+
+![LAM analysis](images/lam_analysis.png)
+
+LAM visualization shows that the proposed dense attention design uses a broader contribution region for reconstructing target details.
 
 ## Usage
 
