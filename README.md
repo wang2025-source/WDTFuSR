@@ -56,6 +56,18 @@ Mean PSNR/SSIM on CIDIS-Test. Learning-based results are averaged over three run
 | SwinPaste | 44.11 | 0.9909 | 36.10 | 0.9527 | 33.29 | 0.9198 |
 | **WDTFuSR** | **44.42** | **0.9912** | **36.46** | **0.9550** | **33.68** | **0.9234** |
 
+### Qualitative Comparison
+
+![Qualitative comparison with guided infrared super-resolution methods](images/guided_method_comparison.png)
+
+WDTFuSR preserves clearer structural details and thermal boundaries than competing guided methods.
+
+### Rotation Robustness
+
+![Robustness to visible-guide rotation](images/rotation_robustness.png)
+
+Reconstruction quality degrades gradually as visible-guide rotation increases, while remaining competitive under moderate misalignment.
+
 ## Figures
 
 ### Subband-Decoupled Wavelet Modulation
@@ -69,12 +81,6 @@ SDWMB independently transforms Haar wavelet sub-bands and restores their spatial
 ![RDCAG](images/rdcag_module.png)
 
 RDCAG combines interlaced window attention, channel recalibration, dense reuse, and a residual path to preserve weak thermal structures.
-
-### Attention-Guided Cross-Domain Fusion
-
-![ACFM](images/acfm_module.png)
-
-ACFM performs bidirectional local cross-attention between infrared and visible streams while retaining both updated representations for reconstruction.
 
 ### LAM Analysis
 
