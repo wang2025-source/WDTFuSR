@@ -56,19 +56,59 @@ Mean PSNR/SSIM on CIDIS-Test. Learning-based results are averaged over three run
 | SwinPaste | 44.11 | 0.9909 | 36.10 | 0.9527 | 33.29 | 0.9198 |
 | **WDTFuSR** | **44.42** | **0.9912** | **36.46** | **0.9550** | **33.68** | **0.9234** |
 
-### Qualitative Comparison
+## Experiments
+
+### Qualitative Reconstruction
+
+Six representative CIDIS-Test scenes with image-level PSNR and SSIM:
+
+![Qualitative reconstruction overview](images/qualitative_overview.png)
+
+Comparisons with single-image and guided infrared super-resolution methods:
+
+![Qualitative comparison on CIDIS-Test scene 1](images/qualitative_comparison_1.png)
+
+![Qualitative comparison on CIDIS-Test scene 2](images/qualitative_comparison_2.png)
 
 ![Qualitative comparison with guided infrared super-resolution methods](images/guided_method_comparison.png)
 
-WDTFuSR preserves clearer structural details and thermal boundaries than competing guided methods.
+### Ablation Studies
 
-### Rotation Robustness
+Component and fusion-strategy ablations:
+
+![Ablation comparison on scene 1](images/ablation_comparison.png)
+
+![Ablation comparison on scene 2](images/ablation_comparison_2.png)
+
+![Module-depth ablation](images/module_depth_ablation.png)
+
+### Generalization and Semantic Evaluation
+
+Cross-dataset reconstruction results on M3FD and RoadScene:
+
+![Cross-dataset comparison on M3FD](images/cross_dataset_1.png)
+
+![Cross-dataset comparison on RoadScene](images/cross_dataset_2.png)
+
+Downstream semantic segmentation comparison on MSRS:
+
+![Semantic segmentation comparison](images/semantic_results.png)
+
+### Guide Robustness
+
+Visible-guide translation:
+
+![Robustness to visible-guide translation](images/misalignment_robustness.png)
+
+![Qualitative visible-guide translation comparison](images/qualitative_misalignment.png)
+
+Visible-guide rotation:
 
 ![Robustness to visible-guide rotation](images/rotation_robustness.png)
 
-Reconstruction quality degrades gradually as visible-guide rotation increases, while remaining competitive under moderate misalignment.
+![Qualitative visible-guide rotation comparison](images/qualitative_rotation.png)
 
-## Figures
+## Method Figures
 
 ### Subband-Decoupled Wavelet Modulation
 
