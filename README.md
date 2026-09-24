@@ -33,7 +33,7 @@ WDTFuSR first refines infrared features with subband-decoupled wavelet modulatio
 
 ## Results
 
-Mean PSNR/SSIM on CIDIS-Test. Learning-based results are averaged over three runs.
+Mean PSNR/SSIM on CIDIS-Test. Learning-based results are averaged over three independent runs; the WDTFuSR row also reports standard deviation.
 
 | Method | x2 PSNR | x2 SSIM | x4 PSNR | x4 SSIM | x6 PSNR | x6 SSIM |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
@@ -54,7 +54,7 @@ Mean PSNR/SSIM on CIDIS-Test. Learning-based results are averaged over three run
 | SwinFuSR | 43.94 | 0.9906 | 35.89 | 0.9510 | 33.02 | 0.9164 |
 | MSFFCT | 44.03 | 0.9907 | 35.97 | 0.9518 | 33.16 | 0.9180 |
 | SwinPaste | 44.11 | 0.9909 | 36.10 | 0.9527 | 33.29 | 0.9198 |
-| **WDTFuSR** | **44.42** | **0.9912** | **36.46** | **0.9550** | **33.68** | **0.9234** |
+| **WDTFuSR** | **44.42 &plusmn; 0.04** | **0.9912 &plusmn; 0.0001** | **36.46 &plusmn; 0.03** | **0.9550 &plusmn; 0.0003** | **33.68 &plusmn; 0.05** | **0.9234 &plusmn; 0.0004** |
 
 ## Experiments
 
@@ -95,6 +95,8 @@ Downstream semantic segmentation comparison on MSRS:
 ![Semantic segmentation comparison](images/semantic_results.png)
 
 ### Guide Robustness
+
+The robustness analyses below use the selected fixed-seed configuration; the main benchmark above reports the final three-run mean.
 
 Visible-guide translation:
 
