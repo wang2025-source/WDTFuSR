@@ -1,0 +1,31 @@
+{
+  "model": {
+    "scale": 4,
+    "channels": 60,
+    "encoder_groups": 2,
+    "fusion_modules": 3,
+    "reconstruction_groups": 2,
+    "dense_units": 5,
+    "window_size": 8,
+    "heads": 6,
+    "mlp_ratio": 2,
+    "residual_scale": 0.2,
+    "visible_dropout": 0.5
+  },
+  "training": {
+    "epochs": 4000,
+    "batch_size": 16,
+    "crop_size": 64,
+    "workers": 4,
+    "learning_rate": 0.0004,
+    "decay_epochs": [
+      1000,
+      2000
+    ]
+  },
+  "data": {
+    "infrared": "datasets/CIDIS/thermal/train_LRbicx4",
+    "visible": "datasets/CIDIS/visible/train_GTmod12",
+    "target": "datasets/CIDIS/thermal/train_GTmod12"
+  }
+}

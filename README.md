@@ -1,0 +1,155 @@
+# WDTFuSR
+
+<p align="center">
+  <b>A Fusion-Guided Infrared Image Super-Resolution Network with Wavelet Modulation and Dense Transformer</b>
+</p>
+
+<p align="center">
+  <a href="#"><img src="https://img.shields.io/badge/task-guided%20infrared%20SR-2f6f9f"></a>
+  <a href="#"><img src="https://img.shields.io/badge/framework-PyTorch-ee4c2c"></a>
+  <a href="#"><img src="https://img.shields.io/badge/model-WDTFuSR-4c7c59"></a>
+</p>
+
+WDTFuSR reconstructs high-resolution infrared images from low-resolution infrared inputs with visible-image guidance.
+
+## Architecture
+
+![WDTFuSR graphical abstract](images/graphical_abstract.png)
+
+WDTFuSR first refines infrared features with subband-decoupled wavelet modulation, then extracts dual-stream features and performs attention-guided cross-domain fusion for HR infrared reconstruction.
+
+## Highlights
+
+- Subband-decoupled wavelet modulation for infrared detail enhancement.
+- Dense Transformer backbone for structure preservation.
+- Attention-guided infrared-visible feature fusion.
+
+## Downloads
+
+| Resource | Link |
+| --- | --- |
+| CIDIS dataset | [vision-cidis/CIDIS-dataset](https://github.com/vision-cidis/CIDIS-dataset) |
+
+## Results
+
+Mean PSNR/SSIM on CIDIS-Test. Learning-based results are averaged over three independent runs; the WDTFuSR row also reports standard deviation.
+
+| Method | x2 PSNR | x2 SSIM | x4 PSNR | x4 SSIM | x6 PSNR | x6 SSIM |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Bicubic | 40.43 | 0.9823 | 31.76 | 0.8971 | 28.61 | 0.8230 |
+| SRCNN | 41.61 | 0.9851 | 33.15 | 0.9159 | 30.07 | 0.8554 |
+| FSRCNN | 41.58 | 0.9844 | 33.12 | 0.9113 | 30.04 | 0.8475 |
+| VDSR | 42.79 | 0.9883 | 34.54 | 0.9363 | 31.53 | 0.8905 |
+| EDSR | 43.40 | 0.9897 | 35.26 | 0.9451 | 32.29 | 0.9056 |
+| SRDenseNet | 43.06 | 0.9889 | 34.86 | 0.9398 | 31.87 | 0.8967 |
+| RDN | 43.50 | 0.9896 | 35.38 | 0.9446 | 32.41 | 0.9048 |
+| RRDBNet | 43.31 | 0.9892 | 35.15 | 0.9425 | 32.17 | 0.9012 |
+| SwinIR | 42.87 | 0.9890 | 34.64 | 0.9408 | 31.62 | 0.8981 |
+| DRCT | 43.77 | 0.9900 | 35.68 | 0.9474 | 32.73 | 0.9096 |
+| CoReFusion | 43.18 | 0.9887 | 34.71 | 0.9441 | 31.84 | 0.9015 |
+| GuidedSR | 43.12 | 0.9889 | 34.66 | 0.9444 | 31.78 | 0.9021 |
+| TnTViT-G | 43.56 | 0.9896 | 35.18 | 0.9473 | 32.36 | 0.9087 |
+| FW-SAT | 43.73 | 0.9900 | 35.43 | 0.9491 | 32.61 | 0.9124 |
+| SwinFuSR | 43.94 | 0.9906 | 35.89 | 0.9510 | 33.02 | 0.9164 |
+| MSFFCT | 44.03 | 0.9907 | 35.97 | 0.9518 | 33.16 | 0.9180 |
+| SwinPaste | 44.11 | 0.9909 | 36.10 | 0.9527 | 33.29 | 0.9198 |
+| **WDTFuSR** | **44.42 &plusmn; 0.04** | **0.9912 &plusmn; 0.0001** | **36.46 &plusmn; 0.03** | **0.9550 &plusmn; 0.0003** | **33.68 &plusmn; 0.05** | **0.9234 &plusmn; 0.0004** |
+
+## Experiments
+
+### Qualitative Reconstruction
+
+Six representative CIDIS-Test scenes with image-level PSNR and SSIM:
+
+![Qualitative reconstruction overview](images/qualitative_overview.png)
+
+Comparisons with single-image and guided infrared super-resolution methods:
+
+![Qualitative comparison on CIDIS-Test scene 1](images/qualitative_comparison_1.png)
+
+![Qualitative comparison on CIDIS-Test scene 2](images/qualitative_comparison_2.png)
+
+![Qualitative comparison with guided infrared super-resolution methods](images/guided_method_comparison.png)
+
+### Ablation Studies
+
+Component and fusion-strategy ablations:
+
+![Ablation comparison on scene 1](images/ablation_comparison.png)
+
+![Ablation comparison on scene 2](images/ablation_comparison_2.png)
+
+![Module-depth ablation](images/module_depth_ablation.png)
+
+### Generalization and Semantic Evaluation
+
+Cross-dataset reconstruction results on M3FD and RoadScene:
+
+![Cross-dataset comparison on M3FD](images/cross_dataset_1.png)
+
+![Cross-dataset comparison on RoadScene](images/cross_dataset_2.png)
+
+Downstream semantic segmentation comparison on MSRS:
+
+![Semantic segmentation comparison](images/semantic_results.png)
+
+### Guide Robustness
+
+The robustness analyses below use the selected fixed-seed configuration; the main benchmark above reports the final three-run mean.
+
+Visible-guide translation:
+
+![Robustness to visible-guide translation](images/misalignment_robustness.png)
+
+![Qualitative visible-guide translation comparison](images/qualitative_misalignment.jpg)
+
+Visible-guide rotation:
+
+![Robustness to visible-guide rotation](images/rotation_robustness.png)
+
+![Qualitative visible-guide rotation comparison](images/qualitative_rotation.png)
+
+## Method Figures
+
+### Subband-Decoupled Wavelet Modulation
+
+![SDWMB](images/paper_overview.png)
+
+SDWMB independently transforms Haar wavelet sub-bands and restores their spatial arrangement before modulation, strengthening infrared structure before cross-modal fusion.
+
+### Residual Dense Channel Attention Group
+
+![RDCAG](images/rdcag_module.png)
+
+RDCAG combines interlaced window attention, channel recalibration, dense reuse, and a residual path to preserve weak thermal structures.
+
+### LAM Analysis
+
+![LAM analysis](images/lam_analysis.png)
+
+LAM visualization shows that WDTFuSR uses a broader spatial context when reconstructing the selected target region.
+
+## Usage
+
+```bash
+conda create --name WDTFuSR python=3.9
+conda activate WDTFuSR
+pip install -r requirements.txt
+```
+
+Train:
+
+```bash
+python train.py --config options/train_x4.json --output outputs/wdtfusr_x4
+```
+
+Test:
+
+```bash
+python infer.py --weights outputs/wdtfusr_x4/last.pth \
+  --infrared datasets/CIDIS/thermal/test_LRbicx4 \
+  --visible datasets/CIDIS/visible/test_GTmod12 \
+  --output outputs/CIDIS_x4
+```
+
+Set the paired dataset paths in `options/train_x4.json`. Use `train_x2.json` or `train_x6.json` for other scales; `--seed` selects independent runs and `--guide-dropout` selects the visible-modality dropout probability.
